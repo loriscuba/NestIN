@@ -12,6 +12,16 @@ Piattaforma per la gestione di Asili Nido e Scuole Materne, divisa in due applic
 > (ricaricando la pagina si riparte da zero). Le due app non sono ancora collegate tra loro.
 > Cliente di riferimento per la demo: Asilo G.B. Vadone, Quiliano (SV).
 
+## Demo online
+
+Ogni push su `main` pubblica le due app su GitHub Pages (workflow `.github/workflows/pages.yml`):
+
+- Pagina iniziale: `https://loriscuba.github.io/NestIN/`
+- NestIN: `https://loriscuba.github.io/NestIN/nestin/`
+- NestApp: `https://loriscuba.github.io/NestIN/nestapp/`
+
+Prima volta: in *Settings → Pages* del repository scegliere **Source: GitHub Actions**.
+
 ## Avvio
 
 ```bash
