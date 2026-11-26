@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { PAY_META, SECTIONS, initials } from '@nestin/shared';
+import { PAY_META, SECTIONS, eur2, initials, rettaOf } from '@nestin/shared';
 import { useStore } from '../store';
 
 export function Bambini() {
-  const { kids, pay, role } = useStore();
+  const { kids, pay, role, courses, enrollments, toggleEnroll } = useStore();
   const [q, setQ] = useState('');
   const [selId, setSelId] = useState<number | null>(null);
   const list = kids.filter((k) => k.name.toLowerCase().includes(q.trim().toLowerCase()));
@@ -41,6 +41,31 @@ export function Bambini() {
             <div><div className="label">Contatto principale</div>{sel.contatto}</div>
             <div><div className="label">Deleghe al ritiro</div>{sel.delega}</div>
             <div><div className="label">Presenza oggi</div>{sel.present ? 'Presente dalle ' + sel.ingresso : 'Assente'}</div>
+            <div>
+              <div className="label">Corsi</div>
+              {role === 'segreteria' ? (
+                <div className="row wrap" style={{ gap: 8, marginTop: 6 }}>
+                  {courses.map((c) => {
+                    const on = (enrollments[sel.id] ?? []).includes(c.id);
+                    return (
+                      <button key={c.id} className={`chip${on ? ' on' : ''}`} aria-pressed={on} onClick={() => toggleEnroll(sel.id, c.id)}>
+                        {c.name} · {eur2(c.price)}
+                      </button>
+                    );
+                  })}
+                  {courses.length === 0 && <span className="muted">Nessun corso a listino.</span>}
+                </div>
+              ) : (
+                <div>{courses.filter((c) => (enrollments[sel.id] ?? []).includes(c.id)).map((c) => `${c.name} (${String(c.hours).replace('.', ',')} h/sett.)`).join(', ') || 'Nessun corso'}</div>
+              )}
+            </div>
+            {role === 'segreteria' && (
+              <div>
+                <div className="label">Totale mensile</div>
+                {eur2(rettaOf(sel) + courses.filter((c) => (enrollments[sel.id] ?? []).includes(c.id)).reduce((a, c) => a + c.price, 0))}
+                <span className="muted small"> · retta {eur2(rettaOf(sel))} + corsi</span>
+              </div>
+            )}
             {role === 'segreteria' && (
               <div>
                 <div className="label">Retta di ottobre</div>
