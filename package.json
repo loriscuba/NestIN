@@ -1,0 +1,12 @@
+{
+  "name": "nestin-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "dev:nestin": "npm run dev -w @nestin/nestin",
+    "dev:nestapp": "npm run dev -w @nestin/nestapp",
+    "build": "npm run build -w @nestin/nestin && npm run build -w @nestin/nestapp",
+    "typecheck": "npm run typecheck -w @nestin/nestin && npm run typecheck -w @nestin/nestapp"
+  }
+}
