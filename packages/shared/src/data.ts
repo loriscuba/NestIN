@@ -1,4 +1,4 @@
-import type { DiaryEntry, Kid, MenuDay, Notice, PayStatus, SectionId } from './types';
+import type { DiaryEntry, DiaryFlags, Kid, MenuDay, Notice, PayStatus, SectionId } from './types';
 
 /** Tutti i dati di questo file sono inventati: nessun DB, nessuna persona reale. */
 export const SCHOOL = {
@@ -75,6 +75,13 @@ export const INITIAL_DIARY: Record<number, DiaryEntry[]> = {
     { time: '13:00', text: 'Riposo fino alle 15:00' }
   ]
 };
+
+/** Spunte Cacca / Nanna di oggi (i bambini non presenti qui partono senza spunte). */
+export const INITIAL_DIARY_FLAGS: Record<number, DiaryFlags> = {
+  1: { cacca: true, nanna: true }
+};
+
+export const NO_DIARY_FLAGS: DiaryFlags = { cacca: false, nanna: false };
 
 export const TEACHER_NOTE_SOFIA = 'Oggi Sofia ha disegnato il mare con i colori a dita ed è stata molto contenta in giardino.';
 

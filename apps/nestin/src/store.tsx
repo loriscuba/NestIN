@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import {
-  COSTI_DEFAULT, DEMO_DATE_SHORT, INITIAL_ABSENCES_MON, INITIAL_DIARY, INITIAL_KIDS, INITIAL_NOTICES, INITIAL_PAY, MEAL_COST_DEFAULT,
-  type DiaryEntry, type Kid, type Notice, type NoticeTarget, type PayStatus
+  COSTI_DEFAULT, DEMO_DATE_SHORT, INITIAL_ABSENCES_MON, INITIAL_DIARY, INITIAL_DIARY_FLAGS, INITIAL_KIDS, INITIAL_NOTICES, INITIAL_PAY, MEAL_COST_DEFAULT,
+  type DiaryEntry, type DiaryFlags, type Kid, type Notice, type NoticeTarget, type PayStatus
 } from '@nestin/shared';
 
 export type Role = 'segreteria' | 'maestra';
@@ -28,6 +28,8 @@ interface Store {
   sendNotice: (title: string, body: string, target: NoticeTarget) => void;
   diary: Record<number, DiaryEntry[]>;
   addDiary: (kidId: number, text: string) => void;
+  diaryFlags: Record<number, DiaryFlags>;
+  toggleDiaryFlag: (kidId: number, flag: keyof DiaryFlags) => void;
 }
 
 const Ctx = createContext<Store | null>(null);
@@ -50,6 +52,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [costi, setCosti] = useState(COSTI_DEFAULT);
   const [notices, setNotices] = useState(INITIAL_NOTICES);
   const [diary, setDiary] = useState(INITIAL_DIARY);
+  const [diaryFlags, setDiaryFlags] = useState(INITIAL_DIARY_FLAGS);
 
   const value = useMemo<Store>(
     () => ({
@@ -67,9 +70,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       notices,
       sendNotice: (title, body, target) => setNotices((n) => [{ id: Date.now(), title, body, target, date: DEMO_DATE_SHORT, fresh: true }, ...n]),
       diary,
-      addDiary: (kidId, text) => setDiary((d) => ({ ...d, [kidId]: [...(d[kidId] ?? []), { time: '14:30', text }] }))
+      addDiary: (kidId, text) => setDiary((d) => ({ ...d, [kidId]: [...(d[kidId] ?? []), { time: '14:30', text }] })),
+      diaryFlags,
+      toggleDiaryFlag: (kidId, flag) =>
+        setDiaryFlags((f) => {
+          const cur = f[kidId] ?? { cacca: false, nanna: false };
+          return { ...f, [kidId]: { ...cur, [flag]: !cur[flag] } };
+        })
     }),
-    [role, kids, pay, reminded, attGen, absMon, costoPasto, costi, notices, diary]
+    [role, kids, pay, reminded, attGen, absMon, costoPasto, costi, notices, diary, diaryFlags]
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
