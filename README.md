@@ -60,9 +60,8 @@ Quando arriverà il database, i `store.tsx` sono l'unico punto da sostituire con
 
 ## Logo
 
-Il marchio nell'intestazione è provvisorio. Per usare il logo ufficiale della scuola copia il file in
-`apps/nestin/public/logo-vadone.jpg` e `apps/nestapp/public/logo-vadone.jpg`, poi passa
-`logoSrc="./logo-vadone.jpg"` a `<BrandMark />` in `App.tsx`.
+Il logo ufficiale della scuola è in `packages/shared/src/logo.png` ed è usato da `<BrandMark />` in entrambe le app.
+Favicon e icone (`apps/*/public/*.png`, manifest di NestApp) sono generate dallo stesso logo.
 
 ## Identità grafica
 
