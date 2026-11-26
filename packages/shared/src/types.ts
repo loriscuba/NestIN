@@ -37,3 +37,11 @@ export interface DiaryEntry {
   time: string;
   text: string;
 }
+
+/** Spunte rapide del diario di oggi, per bambino. */
+export interface DiaryFlags {
+  cacca: boolean;
+  nanna: boolean;
+}
+
+export const DIARY_FLAG_LABELS: Record<keyof DiaryFlags, string> = { cacca: 'Cacca', nanna: 'Nanna' };

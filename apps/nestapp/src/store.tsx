@@ -1,11 +1,12 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { DEMO_CHILD_ID, INITIAL_DIARY, INITIAL_KIDS, INITIAL_NOTICES, INITIAL_PAY, noticeVisibleTo, type DiaryEntry, type Kid, type Notice } from '@nestin/shared';
+import { DEMO_CHILD_ID, INITIAL_DIARY, INITIAL_DIARY_FLAGS, INITIAL_KIDS, NO_DIARY_FLAGS, INITIAL_NOTICES, INITIAL_PAY, noticeVisibleTo, type DiaryEntry, type DiaryFlags, type Kid, type Notice } from '@nestin/shared';
 
 interface Absence { day: string; reason: string }
 
 interface Store {
   child: Kid;
   diary: DiaryEntry[];
+  diaryFlags: DiaryFlags;
   notices: Notice[];
   done: Record<number, boolean>;
   markDone: (id: number) => void;
@@ -35,6 +36,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => ({
       child,
       diary: INITIAL_DIARY[child.id] ?? [],
+      diaryFlags: INITIAL_DIARY_FLAGS[child.id] ?? NO_DIARY_FLAGS,
       notices: INITIAL_NOTICES.filter((n) => noticeVisibleTo(n.target, child.sec)),
       done,
       markDone: (id) => setDone((d) => ({ ...d, [id]: true })),
