@@ -38,6 +38,7 @@ export function Oggi() {
         ))}
       </div>
       <button className="pbtn" onClick={() => nav('/assenza')}>Segnala un'assenza</button>
+      <button className="pbtn outline" onClick={() => nav('/colloqui')}>Prenota un colloquio con la maestra</button>
     </>
   );
 }
