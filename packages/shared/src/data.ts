@@ -1,4 +1,4 @@
-import type { DiaryEntry, DiaryFlags, Kid, MenuDay, Notice, PayStatus, SectionId } from './types';
+import type { Course, DiaryEntry, DiaryFlags, Kid, MenuDay, Notice, PayStatus, Payer, SchoolBilling, SectionId } from './types';
 
 /** Tutti i dati di questo file sono inventati: nessun DB, nessuna persona reale. */
 export const SCHOOL = {
@@ -90,3 +90,56 @@ export const DEMO_CHILD_ID = 1;
 
 export const MEAL_COST_DEFAULT = '4,50';
 export const COSTI_DEFAULT = { personale: '3600', cucina: '900', altri: '800' };
+
+/** Listino corsi di esempio: prezzo = canone mensile, hours = ore a settimana. */
+export const INITIAL_COURSES: Course[] = [
+  { id: 1, name: 'Corso di Inglese', price: 40, hours: 2, desc: 'Martedì e giovedì, 10:00–11:00' },
+  { id: 2, name: 'Musica', price: 30, hours: 1, desc: 'Mercoledì, 10:30–11:30' },
+  { id: 3, name: 'Piscina', price: 45, hours: 1, desc: 'Venerdì mattina, con accompagnamento' },
+  { id: 4, name: 'Maneggio', price: 50, hours: 1.5, desc: 'Lunedì pomeriggio, dai 4 anni' }
+];
+
+/** Corsi assegnati a ogni bambino (id bambino → id corsi). */
+export const INITIAL_ENROLLMENTS: Record<number, number[]> = {
+  1: [2], 2: [1, 2], 3: [], 4: [1], 5: [2],
+  6: [1], 7: [1, 2], 8: [], 9: [3], 10: [1, 3],
+  11: [1, 3, 4], 12: [4], 13: [1, 2, 4], 14: [], 15: [1, 3]
+};
+
+const PAYER_NAMES: Record<number, string> = {
+  1: 'Laura Ricci', 2: 'Marco Bianchi', 3: 'Francesca Conti', 4: 'Andrea Greco', 5: 'Silvia Russo',
+  6: 'Elena Ferrari', 7: 'Davide Marino', 8: 'Chiara Gallo', 9: 'Valentina Costa', 10: 'Stefano Fontana',
+  11: 'Martina Villa', 12: 'Luca Serra', 13: 'Giorgia Barbieri', 14: 'Paolo Lombardi', 15: 'Sara Moretti'
+};
+const STREETS = ['Via Roma', 'Via Aurelia', 'Via Valletta', 'Corso Italia', 'Via Garibaldi'];
+
+/** Intestatari di esempio (codici fiscali inventati, non validi). */
+export const INITIAL_PAYERS: Record<number, Payer> = Object.fromEntries(
+  Object.entries(PAYER_NAMES).map(([id, name]) => {
+    const n = Number(id);
+    const [first, last] = name.toUpperCase().split(' ');
+    const cf = (last.slice(0, 3) + first.slice(0, 3) + '85A01Z' + String(100 + n).slice(-3) + 'X').padEnd(16, 'X').slice(0, 16);
+    return [n, {
+      name, cf,
+      address: `${STREETS[n % STREETS.length]} ${n * 3 + 1}`,
+      cap: n % 3 === 0 ? '17100' : '17047',
+      city: n % 3 === 0 ? 'Savona' : 'Quiliano',
+      prov: 'SV',
+      email: `famiglia${n}@esempio.it`
+    }];
+  })
+);
+
+/** Dati fiscali di esempio dell'asilo (da sostituire con quelli veri). */
+export const SCHOOL_BILLING_DEFAULT: SchoolBilling = {
+  ragioneSociale: 'Asilo infantile G.B. Vadone',
+  piva: '01234567890',
+  cf: '01234567890',
+  address: 'Via Esempio 1',
+  cap: '17047',
+  city: 'Quiliano',
+  prov: 'SV',
+  iban: 'IT60X0542811101000000123456',
+  dueDay: 10,
+  bolloToFamily: true
+};

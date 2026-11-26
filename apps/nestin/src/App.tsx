@@ -9,6 +9,8 @@ import { Diario } from './pages/Diario';
 import { Comunicazioni } from './pages/Comunicazioni';
 import { Rette } from './pages/Rette';
 import { Economico } from './pages/Economico';
+import { Corsi } from './pages/Corsi';
+import { Fatturazione } from './pages/Fatturazione';
 
 interface Item { path: string; label: string; title: string; roles: Role[] }
 const ITEMS: Item[] = [
@@ -19,6 +21,8 @@ const ITEMS: Item[] = [
   { path: '/bambini', label: 'Bambini', title: 'Bambini', roles: ['segreteria', 'maestra'] },
   { path: '/comunicazioni', label: 'Comunicazioni', title: 'Comunicazioni', roles: ['segreteria', 'maestra'] },
   { path: '/rette', label: 'Rette', title: 'Rette', roles: ['segreteria'] },
+  { path: '/corsi', label: 'Corsi', title: 'Listino corsi', roles: ['segreteria'] },
+  { path: '/fatturazione', label: 'Fatturazione', title: 'Fatturazione mensile', roles: ['segreteria'] },
   { path: '/economico', label: 'Economico', title: 'Economico', roles: ['segreteria'] }
 ];
 
@@ -62,6 +66,8 @@ export function App() {
             <Route path="/bambini" element={<Bambini />} />
             <Route path="/comunicazioni" element={<Comunicazioni />} />
             <Route path="/rette" element={<Rette />} />
+            <Route path="/corsi" element={<Corsi />} />
+            <Route path="/fatturazione" element={<Fatturazione />} />
             <Route path="/economico" element={<Economico />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

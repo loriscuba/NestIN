@@ -25,3 +25,21 @@
 .flagchk input { width: 20px; height: 20px; margin: 0; accent-color: var(--ok-fg); cursor: pointer; }
 .flagchk.on { background: var(--ok-bg); color: var(--ok-fg); box-shadow: none; }
 .flagchk:focus-within { outline: 2px solid var(--navy); outline-offset: 2px; }
+/* Listino corsi e fatturazione */
+.course-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-items: end; }
+.course-form label { display: flex; flex-direction: column; gap: 4px; }
+.matrix-wrap { overflow-x: auto; }
+.matrix { width: 100%; border-collapse: collapse; min-width: 560px; }
+.matrix th { text-align: center; font-size: 14px; color: var(--navy); padding: 8px; vertical-align: bottom; }
+.matrix th:first-child { text-align: left; }
+.matrix td { border-top: 1px solid var(--line-soft); padding: 4px 8px; text-align: center; }
+.matrix td:first-child { text-align: left; }
+.matrix tr.matrix-sec td { text-align: left; padding-top: 14px; border-top: 0; }
+.cell-chk { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; cursor: pointer; }
+.cell-chk input { width: 22px; height: 22px; margin: 0; accent-color: var(--navy); cursor: pointer; }
+.export-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.export { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 14px; background: var(--cream); }
+.export .btn { margin-top: auto; }
+@media (max-width: 900px) {
+  .course-form, .export-grid { grid-template-columns: minmax(0, 1fr); }
+}

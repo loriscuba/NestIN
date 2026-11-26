@@ -1,8 +1,11 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import {
+  INITIAL_COURSES, INITIAL_ENROLLMENTS, INITIAL_PAYERS, SCHOOL_BILLING_DEFAULT,
+  type Course, type Payer, type SchoolBilling,
   COSTI_DEFAULT, DEMO_DATE_SHORT, INITIAL_ABSENCES_MON, INITIAL_DIARY, INITIAL_DIARY_FLAGS, INITIAL_KIDS, INITIAL_NOTICES, INITIAL_PAY, MEAL_COST_DEFAULT,
   type DiaryEntry, type DiaryFlags, type Kid, type Notice, type NoticeTarget, type PayStatus
 } from '@nestin/shared';
+import { buildInvoices, monthOf, type Invoice } from './billing';
 
 export type Role = 'segreteria' | 'maestra';
 
@@ -30,6 +33,20 @@ interface Store {
   addDiary: (kidId: number, text: string) => void;
   diaryFlags: Record<number, DiaryFlags>;
   toggleDiaryFlag: (kidId: number, flag: keyof DiaryFlags) => void;
+  courses: Course[];
+  saveCourse: (c: Course) => void;
+  removeCourse: (id: number) => void;
+  enrollments: Record<number, number[]>;
+  toggleEnroll: (kidId: number, courseId: number) => void;
+  payers: Record<number, Payer>;
+  school: SchoolBilling;
+  setSchool: (s: SchoolBilling) => void;
+  /** Fatture emesse per mese (AAAA-MM → fatture) */
+  invoices: Record<string, Invoice[]>;
+  generateInvoices: (monthKey: string) => void;
+  /** Annulla l'ultimo lotto emesso dell'anno (per correggere e rigenerare) */
+  cancelInvoices: (monthKey: string) => void;
+  canCancel: (monthKey: string) => boolean;
 }
 
 const Ctx = createContext<Store | null>(null);
@@ -53,6 +70,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [notices, setNotices] = useState(INITIAL_NOTICES);
   const [diary, setDiary] = useState(INITIAL_DIARY);
   const [diaryFlags, setDiaryFlags] = useState(INITIAL_DIARY_FLAGS);
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
+  const [enrollments, setEnrollments] = useState<Record<number, number[]>>(INITIAL_ENROLLMENTS);
+  const [payers] = useState<Record<number, Payer>>(INITIAL_PAYERS);
+  const [school, setSchool] = useState<SchoolBilling>(SCHOOL_BILLING_DEFAULT);
+  const [invoices, setInvoices] = useState<Record<string, Invoice[]>>({});
+
+  /** Ultimo numero di fattura usato nell'anno (la numerazione riparte a gennaio). */
+  const lastSeq = (year: number): number =>
+    Math.max(0, ...Object.values(invoices).flat().filter((i) => i.date.startsWith(String(year))).map((i) => i.seq));
+  const canCancel = (monthKey: string): boolean => {
+    const batch = invoices[monthKey];
+    if (!batch?.length) return false;
+    return batch[batch.length - 1].seq === lastSeq(monthOf(monthKey).year);
+  };
 
   const value = useMemo<Store>(
     () => ({
@@ -76,9 +107,38 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setDiaryFlags((f) => {
           const cur = f[kidId] ?? { cacca: false, nanna: false };
           return { ...f, [kidId]: { ...cur, [flag]: !cur[flag] } };
-        })
+        }),
+      courses,
+      saveCourse: (c) => setCourses((cs) => (cs.some((x) => x.id === c.id) ? cs.map((x) => (x.id === c.id ? c : x)) : [...cs, c])),
+      removeCourse: (id) => {
+        setCourses((cs) => cs.filter((c) => c.id !== id));
+        setEnrollments((e) => Object.fromEntries(Object.entries(e).map(([k, v]) => [k, v.filter((c) => c !== id)])));
+      },
+      enrollments,
+      toggleEnroll: (kidId, courseId) =>
+        setEnrollments((e) => {
+          const cur = e[kidId] ?? [];
+          return { ...e, [kidId]: cur.includes(courseId) ? cur.filter((c) => c !== courseId) : [...cur, courseId] };
+        }),
+      payers,
+      school, setSchool,
+      invoices,
+      generateInvoices: (monthKey) => {
+        if (invoices[monthKey]?.length) return;
+        const batch = buildInvoices(monthKey, kids, enrollments, courses, payers, school, lastSeq(monthOf(monthKey).year) + 1);
+        setInvoices((inv) => ({ ...inv, [monthKey]: batch }));
+      },
+      cancelInvoices: (monthKey) => {
+        if (!canCancel(monthKey)) return;
+        setInvoices((inv) => {
+          const next = { ...inv };
+          delete next[monthKey];
+          return next;
+        });
+      },
+      canCancel
     }),
-    [role, kids, pay, reminded, attGen, absMon, costoPasto, costi, notices, diary, diaryFlags]
+    [role, kids, pay, reminded, attGen, absMon, costoPasto, costi, notices, diary, diaryFlags, courses, enrollments, payers, school, invoices]
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
