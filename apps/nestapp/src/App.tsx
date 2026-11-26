@@ -7,6 +7,7 @@ import { Menu } from './pages/Menu';
 import { Avvisi } from './pages/Avvisi';
 import { AvvisoDettaglio } from './pages/AvvisoDettaglio';
 import { Rette } from './pages/Rette';
+import { Colloqui } from './pages/Colloqui';
 
 const TABS = [
   { to: '/', label: 'Oggi' },
@@ -35,6 +36,7 @@ export function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/avvisi" element={<Avvisi />} />
             <Route path="/avvisi/:id" element={<AvvisoDettaglio />} />
+            <Route path="/colloqui" element={<Colloqui />} />
             <Route path="/rette" element={<Rette />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

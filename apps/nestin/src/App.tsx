@@ -11,6 +11,7 @@ import { Rette } from './pages/Rette';
 import { Economico } from './pages/Economico';
 import { Corsi } from './pages/Corsi';
 import { Fatturazione } from './pages/Fatturazione';
+import { Colloqui } from './pages/Colloqui';
 
 interface Item { path: string; label: string; title: string; roles: Role[] }
 const ITEMS: Item[] = [
@@ -20,6 +21,7 @@ const ITEMS: Item[] = [
   { path: '/pasti', label: 'Pasti', title: 'Pasti di lunedì 5 ottobre', roles: ['segreteria'] },
   { path: '/bambini', label: 'Bambini', title: 'Bambini', roles: ['segreteria', 'maestra'] },
   { path: '/comunicazioni', label: 'Comunicazioni', title: 'Comunicazioni', roles: ['segreteria', 'maestra'] },
+  { path: '/colloqui', label: 'Colloqui', title: 'Colloqui con le famiglie', roles: ['segreteria', 'maestra'] },
   { path: '/rette', label: 'Rette', title: 'Rette', roles: ['segreteria'] },
   { path: '/corsi', label: 'Corsi', title: 'Listino corsi', roles: ['segreteria'] },
   { path: '/fatturazione', label: 'Fatturazione', title: 'Fatturazione mensile', roles: ['segreteria'] },
@@ -65,6 +67,7 @@ export function App() {
             <Route path="/pasti" element={<Pasti />} />
             <Route path="/bambini" element={<Bambini />} />
             <Route path="/comunicazioni" element={<Comunicazioni />} />
+            <Route path="/colloqui" element={<Colloqui />} />
             <Route path="/rette" element={<Rette />} />
             <Route path="/corsi" element={<Corsi />} />
             <Route path="/fatturazione" element={<Fatturazione />} />
